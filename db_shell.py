@@ -51,19 +51,19 @@ while True:
     if line == "" or line.strip()=='exit':
         reset
         break
-    elif line[-1]!=';':
+    elif line.strip()[-1]!=';':
         sign = '...  '
     else:
         sign = '>> '
         reset
-    buffer += line
+    buffer += ' '+line
     if sqlite3.complete_statement(buffer):
         try:
             buffer = buffer.strip()
+            tmp = buffer
             cur.execute(buffer)
-
             if buffer.lstrip().upper().startswith("SELECT"):
-                print(magenta,end='')
+                print(yellow,end='')
                 ret = cur.fetchall()
                 if len(ret)>0:
                     col_name = ret[0].keys()
