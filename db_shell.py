@@ -12,7 +12,8 @@ reset = Fore.RESET
 def ListToFormattedString(alist):
     # Create a format spec for each item in the input `alist`.
     # E.g., each item will be right-adjusted, field width=3.
-    format_list = ['{:<15}' for item in alist] 
+    # print(len(Fore.GREEN+"None"+Fore.RESET)) -> 29
+    format_list = ['{:<15}'.format(item) if item!=None else '{:<25}'.format(Fore.GREEN+"None"+yellow) for item in alist ] 
 
     # Now join the format specs into a single string:
     # E.g., '{:>3}, {:>3}, {:>3}' if the input list has 3 items.
@@ -74,6 +75,9 @@ while True:
                 print(reset,end='')
         except sqlite3.Error as e:
             print(red+"An error occurred:"+' '+e.args[0]+reset)
+            print(green+"---------------NEW COMMAND-----------------"+reset)
+        except Exception as e:
+            print(red+"ERROR: "+str(e)+reset)
             print(green+"---------------NEW COMMAND-----------------"+reset)
         buffer = ""
 
