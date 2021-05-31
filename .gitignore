@@ -1,0 +1,6 @@
+*.exe
+build
+dist
+__pycache__
+*.spec
+*.sqlite3

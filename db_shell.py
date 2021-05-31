@@ -45,6 +45,12 @@ buffer = ""
 
 print(red+"Enter your SQL commands to execute in sqlite3.")
 print("Enter a blank line or 'exit' to exit.")
+print(Fore.LIGHTMAGENTA_EX+"{:<10}{:<25}".format("command","usage"))
+print(Fore.LIGHTCYAN_EX+"{:<10}{:<25}".format("ls","list all tables"))
+print("{:<10}{:<25}".format("help","show all commands"))
+print("{:<10}{:<25}".format("<sql>","execute sql commands"))
+print("{:<10}{:<25}".format("exit","leave this program")+Fore.RESET)
+
 print(green+"---------------NEW COMMAND-----------------"+reset)
 sign = '>> '
 while True:
@@ -52,6 +58,15 @@ while True:
     if line == "" or line.strip()=='exit':
         reset
         break
+    if line.strip()=="ls" and buffer=="":
+        line = "SELECT name as tables FROM sqlite_master WHERE type='table';"
+    elif line.strip()=="help" and buffer=="":
+        print(Fore.LIGHTMAGENTA_EX+"{:<10}{:<25}".format("command","usage"))
+        print(Fore.LIGHTCYAN_EX+"{:<10}{:<25}".format("ls","list all tables"))
+        print("{:<10}{:<25}".format("help","show all commands"))
+        print("{:<10}{:<25}".format("<sql>","execute sql commands"))
+        print("{:<10}{:<25}".format("exit","leave this program")+Fore.RESET)
+        continue
     elif line.strip()[-1]!=';':
         sign = '...  '
     else:
@@ -61,7 +76,6 @@ while True:
     if sqlite3.complete_statement(buffer):
         try:
             buffer = buffer.strip()
-            tmp = buffer
             cur.execute(buffer)
             if buffer.lstrip().upper().startswith("SELECT"):
                 print(yellow,end='')
