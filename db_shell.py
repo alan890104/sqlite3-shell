@@ -59,7 +59,7 @@ while True:
         reset
         break
     if line.strip()=="ls" and buffer=="":
-        line = "SELECT name as tables FROM sqlite_master WHERE type='table';"
+        line = "SELECT SQL FROM sqlite_master WHERE type='table';"
     elif line.strip()=="help" and buffer=="":
         print(Fore.LIGHTMAGENTA_EX+"{:<10}{:<25}".format("command","usage"))
         print(Fore.LIGHTCYAN_EX+"{:<10}{:<25}".format("ls","list all tables"))
