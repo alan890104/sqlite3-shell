@@ -17,6 +17,32 @@ def build():
     os.system("RD /Q /S dist")
     os.system("del /Q db_shell.spec ")
 
+def beautify(s,space):
+    tmp=""
+    stack = []
+    for i in range(len(s)):           
+        if(len(stack)==1):
+            if s[i]=='(':
+                stack.append(0)
+                tmp+='('
+            elif s[i]==')':
+                stack.pop()
+                tmp+=')'
+            elif s[i]==',':
+                tmp+=',\n'+" "*space
+            else:
+                tmp+=s[i]
+        else:
+            if s[i]=='(':
+                stack.append(0)
+                tmp+='('
+            elif s[i]==')':
+                stack.pop()
+                tmp+=')'
+            else:
+                tmp+=s[i]
+    return tmp
+
 def ListToFormattedString(alist,mode=0):
     # Create a format spec for each item in the input `alist`.
     # E.g., each item will be right-adjusted, field width=3.
@@ -25,9 +51,12 @@ def ListToFormattedString(alist,mode=0):
     if mode==1:
         for i in range(len(alist)):
             alist[i] = ' '.join(alist[i].split())
-            alist[i] = alist[i].replace("CREATE TABLE","  -").replace(")" , ")\n")
-            space = alist[i].find('(')
-            alist[i] = alist[i].replace("," , ",\n"+" "*space)
+            alist[i] = alist[i].replace("CREATE TABLE","  -")
+            space = alist[i].find("(")
+            alist[i] = beautify(alist[i],space)
+            idx = alist[i].rfind(")")
+            if idx!=-1:   alist[i] = alist[i][:idx]+")\n"
+            
             
         
     format_list = ['{:<15}'.format(item) if item!=None else '{:<25}'.format(Fore.GREEN+"None"+yellow) for item in alist ] 
