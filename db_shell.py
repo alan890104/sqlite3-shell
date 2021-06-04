@@ -22,8 +22,10 @@ def ListToFormattedString(alist,mode=0):
     if mode==1:
         for i in range(len(alist)):
             alist[i] = ' '.join(alist[i].split())
-            alist[i] = alist[i].replace("CREATE TABLE","  -")
-
+            alist[i] = alist[i].replace("CREATE TABLE","  -").replace(")" , ")\n")
+            space = alist[i].find('(')
+            alist[i] = alist[i].replace("," , ",\n"+" "*space)
+            
         
     format_list = ['{:<15}'.format(item) if item!=None else '{:<25}'.format(Fore.GREEN+"None"+yellow) for item in alist ] 
 
