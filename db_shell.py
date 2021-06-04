@@ -1,5 +1,11 @@
-import sqlite3,colorama,os
+import sqlite3,colorama,os,urllib.request
+from sys import version
 from colorama import Fore, Back, Style
+
+print("Check version.")
+this_version= open("version", "r").read()
+with urllib.request.urlopen('http://python.org/') as response:
+   new_version = response.read()
 
 colorama.init()
 red = Fore.RED
@@ -8,11 +14,21 @@ yellow = Fore.YELLOW
 magenta = Fore.MAGENTA
 reset = Fore.RESET
 
+def build():
+    os.system("pyinstaller --onefile --hidden-import colorama db_shell.py")
+    os.system("copy dist\db_shell.exe db_shell.exe")
 
-def ListToFormattedString(alist):
+def ListToFormattedString(alist,mode=0):
     # Create a format spec for each item in the input `alist`.
     # E.g., each item will be right-adjusted, field width=3.
     # print(len(Fore.GREEN+"None"+Fore.RESET)) -> 29
+
+    if mode==1:
+        for i in range(len(alist)):
+            alist[i] = ' '.join(alist[i].split())
+            alist[i] = alist[i].replace("CREATE TABLE","  -")
+
+        
     format_list = ['{:<15}'.format(item) if item!=None else '{:<25}'.format(Fore.GREEN+"None"+yellow) for item in alist ] 
 
     # Now join the format specs into a single string:
@@ -53,19 +69,25 @@ print("{:<10}{:<25}".format("exit","leave this program")+Fore.RESET)
 
 print(green+"---------------NEW COMMAND-----------------"+reset)
 sign = '>> '
+mode = 0
 while True:
     line = input(sign)
     if line == "" or line.strip()=='exit':
         reset
         break
     if line.strip()=="ls" and buffer=="":
-        line = "SELECT SQL FROM sqlite_master WHERE type='table';"
+        line = "SELECT SQL as TABLES FROM sqlite_master WHERE type='table';"
+        mode=1
     elif line.strip()=="help" and buffer=="":
         print(Fore.LIGHTMAGENTA_EX+"{:<10}{:<25}".format("command","usage"))
         print(Fore.LIGHTCYAN_EX+"{:<10}{:<25}".format("ls","list all tables"))
         print("{:<10}{:<25}".format("help","show all commands"))
         print("{:<10}{:<25}".format("<sql>","execute sql commands"))
         print("{:<10}{:<25}".format("exit","leave this program")+Fore.RESET)
+        continue
+    elif line.strip()=="--build" and buffer=="":
+        print("start to build db_shell.exe.")
+        build()
         continue
     elif line.strip()[-1]!=';':
         sign = '...  '
@@ -82,9 +104,9 @@ while True:
                 ret = cur.fetchall()
                 if len(ret)>0:
                     col_name = ret[0].keys()
-                    print(ListToFormattedString(col_name).upper())
+                    print(ListToFormattedString(col_name,mode).upper())
                     for x in ret:
-                        print(ListToFormattedString(dict(x).values()))
+                        print(ListToFormattedString(list(dict(x).values()),mode))
                     # print(ListToFormattedString(ret.values()))
                 print(reset,end='')
         except sqlite3.Error as e:
@@ -94,5 +116,5 @@ while True:
             print(red+"ERROR: "+str(e)+reset)
             print(green+"---------------NEW COMMAND-----------------"+reset)
         buffer = ""
-
+        mode = 0
 con.close()
