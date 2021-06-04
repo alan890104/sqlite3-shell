@@ -2,11 +2,7 @@ import sqlite3,colorama,os,urllib.request
 from sys import version
 from colorama import Fore, Back, Style
 
-print("Check version.")
-this_version= open("version", "r").read()
-with urllib.request.urlopen('http://python.org/') as response:
-   new_version = response.read()
-
+# init color class
 colorama.init()
 red = Fore.RED
 green = Fore.GREEN
