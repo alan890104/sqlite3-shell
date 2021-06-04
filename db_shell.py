@@ -13,6 +13,9 @@ reset = Fore.RESET
 def build():
     os.system("pyinstaller --onefile --hidden-import colorama db_shell.py")
     os.system("copy dist\db_shell.exe db_shell.exe")
+    os.system("RD /Q /S build")
+    os.system("RD /Q /S dist")
+    os.system("del /Q db_shell.spec ")
 
 def ListToFormattedString(alist,mode=0):
     # Create a format spec for each item in the input `alist`.
@@ -83,7 +86,7 @@ while True:
         print("{:<10}{:<25}".format("<sql>","execute sql commands"))
         print("{:<10}{:<25}".format("exit","leave this program")+Fore.RESET)
         continue
-    elif line.strip()=="--build" and buffer=="":
+    elif line.strip()=="--build--" and buffer=="":
         print("start to build db_shell.exe.")
         build()
         continue
